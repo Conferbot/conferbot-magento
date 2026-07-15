@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Conferbot - AI Chatbot, Live Chat & Customer Support for Magento 2.
+ *
+ * @author    Conferbot <support@conferbot.com>
+ * @license   Open Software License (OSL 3.0)
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
+    <module name="Conferbot_Chat" setup_version="1.0.0">
+        <sequence>
+            <module name="Magento_Store"/>
+            <module name="Magento_Customer"/>
+            <module name="Magento_Checkout"/>
+        </sequence>
+    </module>
+</config>

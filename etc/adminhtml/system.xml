@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Conferbot admin configuration: Stores > Configuration > Services > Conferbot.
+ *
+ * @author    Conferbot <support@conferbot.com>
+ * @license   Open Software License (OSL 3.0)
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="conferbot" translate="label" type="text" sortOrder="400" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Conferbot</label>
+            <tab>service</tab>
+            <resource>Conferbot_Chat::config</resource>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Chat Widget</label>
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enable Chat</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Master on/off switch for the Conferbot widget on the storefront.</comment>
+                </field>
+                <field id="bot_id" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Chatbot ID</label>
+                    <backend_model>Conferbot\Chat\Model\Config\Backend\BotId</backend_model>
+                    <comment>Paste your bot ID (24-character code) from the Conferbot dashboard - you can also paste the full embed snippet or a dashboard URL and the ID is extracted for you. No account yet? Paste 691c970890527a0468f9b2c9 to try our demo bot - it works right away, no signup needed.</comment>
+                </field>
+                <field id="embed_type" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>How the Chat Appears</label>
+                    <source_model>Conferbot\Chat\Model\Config\Source\EmbedType</source_model>
+                    <comment>Floating chat bubble (default) or popup window.</comment>
+                </field>
+                <field id="script_url" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Widget Script URL</label>
+                    <comment>Leave as is for the Conferbot CDN. Useful for staging/self-hosted widget builds.</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

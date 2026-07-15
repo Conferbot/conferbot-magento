@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Conferbot default configuration values.
+ *
+ * @author    Conferbot <support@conferbot.com>
+ * @license   Open Software License (OSL 3.0)
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <conferbot>
+            <general>
+                <enabled>0</enabled>
+                <bot_id/>
+                <embed_type>live_chat</embed_type>
+                <script_url>https://cdn.conferbot.com/dist/v1/widget.min.js</script_url>
+            </general>
+        </conferbot>
+    </default>
+</config>
