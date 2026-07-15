@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Injects the Conferbot widget loader before </body> on every storefront page.
+ *
+ * @author    Conferbot <support@conferbot.com>
+ * @license   Open Software License (OSL 3.0)
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="before.body.end">
+            <block name="conferbot.chat.widget"
+                   template="Conferbot_Chat::widget.phtml">
+                <arguments>
+                    <argument name="widget_config" xsi:type="object">Conferbot\Chat\ViewModel\WidgetConfig</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>
