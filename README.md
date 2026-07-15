@@ -4,11 +4,7 @@ Embeds the [Conferbot](https://conferbot.com) AI chat widget on a Magento 2 stor
 
 ## See it in action
 
-Paste the Chatbot ID, flip the switch, and the bot is live on the storefront - 30 seconds end to end:
-
-![Conferbot Magento demo: paste the bot ID, save, chat appears on the store](docs/demo.gif)
-
-[HD video (MP4)](docs/demo.mp4) - also attached to the [latest release](https://github.com/Conferbot/conferbot-magento/releases).
+The merchant flow is identical across every Conferbot integration: paste the Chatbot ID, enable, and the bot is live. Watch the [PrestaShop demo](https://github.com/Conferbot/conferbot-prestashop#see-it-in-action) or the [Shopify demo](https://github.com/Conferbot/conferbot-shopify#see-it-in-action) - a Magento-specific recording will be added after the staging smoke test (a local Magento instance requires Adobe Marketplace composer credentials, so it cannot be recorded in this repo's CI-style environment).
 
 ## How it works
 
