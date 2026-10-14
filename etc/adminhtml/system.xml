@@ -31,6 +31,11 @@
                     <source_model>Conferbot\Chat\Model\Config\Source\EmbedType</source_model>
                     <comment>Floating chat bubble (default) or popup window.</comment>
                 </field>
+                <field id="identity_secret" translate="label comment" type="obscure" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Identity Verification Secret (optional)</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <comment>From Conferbot workspace settings > Security > Identity verification. Each logged-in customer is then signed on your server, so Conferbot can trust their name and email. Stored encrypted; never sent to the browser.</comment>
+                </field>
                 <field id="script_url" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Widget Script URL</label>
                     <comment>Leave as is for the Conferbot CDN. Useful for staging/self-hosted widget builds.</comment>

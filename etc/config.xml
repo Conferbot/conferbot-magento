@@ -15,6 +15,7 @@
                 <enabled>0</enabled>
                 <bot_id/>
                 <embed_type>live_chat</embed_type>
+                <identity_secret backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
                 <script_url>https://cdn.conferbot.com/dist/v1/widget.min.js</script_url>
             </general>
         </conferbot>
