@@ -1,10 +1,15 @@
 <?php
 /**
- * Conferbot widget loader - canonical snippet from the Conferbot dashboard,
- * with customer/store context passed as the third ConferbotWidget argument.
+ * Conferbot widget loader. The page may be served from the full page cache,
+ * so it carries only the store's context; the visitor's identity (signed)
+ * and cart come from the private "conferbot" customer-data section, and the
+ * widget boots once that is known (or as a guest when it is not available).
+ * Rendered through the secure renderer so the inline script carries Magento's
+ * CSP nonce (2.4.7+ strict CSP on checkout).
  *
  * @var \Magento\Framework\View\Element\Template $block
  * @var \Magento\Framework\Escaper $escaper
+ * @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer
  *
  * @author    Conferbot <support@conferbot.com>
  * @license   Open Software License (OSL 3.0)
@@ -16,24 +21,73 @@ $widgetConfig = $block->getData('widget_config');
 if (!$widgetConfig || !$widgetConfig->shouldRender()) {
     return;
 }
-?>
-<script type="text/javascript">
-  (function (d, s, id) {
-    var js, el = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s);
+
+$scriptUrl = $escaper->escapeJs($widgetConfig->getScriptUrl());
+$botId = $escaper->escapeJs($widgetConfig->getBotId());
+$embedType = $escaper->escapeJs($widgetConfig->getEmbedType());
+$options = /* @noEscape */ $widgetConfig->getOptionsJson();
+
+$script = <<<JS
+(function (d, s, id) {
+  var booted = false;
+  var lastCount = null;
+  function track(e) {
+    try {
+      if (e.once) {
+        if (sessionStorage.getItem('cb-track-' + e.once)) return;
+        sessionStorage.setItem('cb-track-' + e.once, '1');
+      }
+    } catch (err) {}
+    window.ConferbotWidget.track(e.name, e.props || {});
+  }
+  function cartChanged(section) {
+    var count = section && typeof section.cartItemCount === 'number' ? section.cartItemCount : 0;
+    if (booted && lastCount !== null && count > lastCount && window.ConferbotWidget) {
+      window.ConferbotWidget.track('add_to_cart');
+    }
+    lastCount = count;
+  }
+  function boot(section) {
+    if (booted || d.getElementById(id)) return;
+    booted = true;
+    lastCount = section && typeof section.cartItemCount === 'number' ? section.cartItemCount : 0;
+    var js = d.createElement(s), el = d.getElementsByTagName(s)[0];
     js.async = true;
-    js.src = '<?= $escaper->escapeJs($widgetConfig->getScriptUrl()) ?>';
+    js.src = '{$scriptUrl}';
     js.id = id;
     js.charset = 'UTF-8';
-    el.parentNode.insertBefore(js, el);
+    if (el && el.parentNode) { el.parentNode.insertBefore(js, el); } else { d.head.appendChild(js); }
     js.onload = function () {
-      var options = <?= /* @noEscape */ $widgetConfig->getOptionsJson() ?>;
-      window.ConferbotWidget(
-        '<?= $escaper->escapeJs($widgetConfig->getBotId()) ?>',
-        '<?= $escaper->escapeJs($widgetConfig->getEmbedType()) ?>',
-        options
-      );
+      var options = {$options};
+      if (section && section.user) options.user = section.user;
+      if (section && typeof section.cartTotal === 'number') options.customData.cartTotal = section.cartTotal;
+      if (section && typeof section.cartItemCount === 'number') options.customData.cartItemCount = section.cartItemCount;
+      window.ConferbotWidget('{$botId}', '{$embedType}', options);
+      (window.ConferbotEvents || []).forEach(track);
     };
-  })(document, 'script', 'conferbot-js');
-</script>
+  }
+  if (typeof window.require === 'function' && window.require.defined) {
+    // Luma and RequireJS themes: Magento's private content.
+    window.require(['Magento_Customer/js/customer-data'], function (customerData) {
+      var section = customerData.get('conferbot');
+      section.subscribe(function (value) { if (booted) { cartChanged(value); } else { boot(value); } });
+      var now = section();
+      if (now && now.data_id) {
+        boot(now);
+      } else {
+        customerData.reload(['conferbot'], false);
+        setTimeout(function () { boot(section()); }, 4000);
+      }
+    }, function () { boot(null); });
+  } else {
+    // Hyva and other themes: their private-content event, else as a guest.
+    window.addEventListener('private-content-loaded', function (e) {
+      var data = e && e.detail && e.detail.data ? e.detail.data.conferbot : null;
+      if (booted) { cartChanged(data); } else { boot(data); }
+    });
+    setTimeout(function () { boot(null); }, 4000);
+  }
+})(document, 'script', 'conferbot-js');
+JS;
+?>
+<?= /* @noEscape */ $secureRenderer->renderTag('script', ['type' => 'text/javascript'], $script, false) ?>
