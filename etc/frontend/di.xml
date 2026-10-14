@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Registers the "conferbot" customer-data section (private, per visitor).
+ *
+ * @author    Conferbot <support@conferbot.com>
+ * @license   Open Software License (OSL 3.0)
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Customer\CustomerData\SectionPoolInterface">
+        <arguments>
+            <argument name="sectionSourceMap" xsi:type="array">
+                <item name="conferbot" xsi:type="string">Conferbot\Chat\CustomerData\Conferbot</item>
+            </argument>
+        </arguments>
+    </type>
+</config>

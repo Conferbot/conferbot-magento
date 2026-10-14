@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Refresh the "conferbot" section after the actions that change the
+ * customer or the cart, so the widget's identity and cart stay current.
+ *
+ * @author    Conferbot <support@conferbot.com>
+ * @license   Open Software License (OSL 3.0)
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Customer:etc/sections.xsd">
+    <action name="checkout/cart/add">
+        <section name="conferbot"/>
+    </action>
+    <action name="checkout/cart/delete">
+        <section name="conferbot"/>
+    </action>
+    <action name="checkout/cart/updatePost">
+        <section name="conferbot"/>
+    </action>
+    <action name="checkout/cart/updateItemOptions">
+        <section name="conferbot"/>
+    </action>
+    <action name="checkout/cart/couponPost">
+        <section name="conferbot"/>
+    </action>
+    <action name="checkout/sidebar/removeItem">
+        <section name="conferbot"/>
+    </action>
+    <action name="checkout/sidebar/updateItemQty">
+        <section name="conferbot"/>
+    </action>
+    <action name="checkout/onepage/saveOrder">
+        <section name="conferbot"/>
+    </action>
+    <action name="rest/*/V1/carts/*/payment-information">
+        <section name="conferbot"/>
+    </action>
+    <action name="rest/*/V1/guest-carts/*/payment-information">
+        <section name="conferbot"/>
+    </action>
+    <action name="customer/account/loginPost">
+        <section name="conferbot"/>
+    </action>
+    <action name="customer/account/createPost">
+        <section name="conferbot"/>
+    </action>
+    <action name="customer/account/editPost">
+        <section name="conferbot"/>
+    </action>
+    <action name="customer/ajax/login">
+        <section name="conferbot"/>
+    </action>
+    <action name="customer/account/logout">
+        <section name="conferbot"/>
+    </action>
+</config>
