@@ -229,4 +229,24 @@ class LoaderTest extends TestCase
         $this->assertSame(10.5, $decoded['customData']['cartTotal']);
         $this->assertSame(2, $decoded['customData']['cartItemCount']);
     }
+
+    public function testLoggedInCustomerIsSignedWithTheWorkspaceSecret(): void
+    {
+        $customer = ['id' => 12, 'name' => 'Jane Doe', 'email' => 'jane@example.com'];
+        $options = Loader::buildOptions([], $customer, null, 's3cret');
+        $this->assertSame(hash_hmac('sha256', 'mag-12', 's3cret'), $options['user']['hash']);
+        $this->assertArrayNotHasKey('hash', Loader::buildOptions([], $customer)['user']);
+        $this->assertStringNotContainsString('s3cret', Loader::toJson($options));
+    }
+
+    public function testSuccessPageOrderIsAPurchaseOncePerOrder(): void
+    {
+        $events = Loader::events(['id' => 5, 'incrementId' => '000000005', 'total' => 49.5, 'currency' => 'EUR']);
+        $this->assertSame([[
+            'name' => 'purchase',
+            'props' => ['value' => 49.5, 'currency' => 'EUR', 'order_id' => '000000005'],
+            'once' => 'order-5',
+        ]], $events);
+        $this->assertSame('[]', Loader::toJson(Loader::events(null)));
+    }
 }
