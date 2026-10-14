@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Origins the Conferbot widget uses, for Magento's Content Security Policy
+ * (enforced on checkout and payment pages from 2.4.7).
+ *
+ * @author    Conferbot <support@conferbot.com>
+ * @license   Open Software License (OSL 3.0)
+ */
+-->
+<csp_whitelist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Csp:etc/csp_whitelist.xsd">
+    <policies>
+        <policy id="script-src">
+            <values>
+                <value id="conferbot-cdn" type="host">https://cdn.conferbot.com</value>
+            </values>
+        </policy>
+        <policy id="connect-src">
+            <values>
+                <value id="conferbot-wdt" type="host">https://wdt.conferbot.com</value>
+                <value id="conferbot-wdt-ws" type="host">wss://wdt.conferbot.com</value>
+                <value id="conferbot-emoji-data" type="host">https://cdn.jsdelivr.net</value>
+            </values>
+        </policy>
+        <policy id="img-src">
+            <values>
+                <value id="conferbot-media" type="host">https://prd.media.cdn.conferbot.com</value>
+                <value id="conferbot-site" type="host">https://www.conferbot.com</value>
+                <value id="conferbot-map-tiles" type="host">https://tile.openstreetmap.org</value>
+            </values>
+        </policy>
+        <policy id="media-src">
+            <values>
+                <value id="conferbot-media-av" type="host">https://prd.media.cdn.conferbot.com</value>
+            </values>
+        </policy>
+        <policy id="style-src">
+            <values>
+                <value id="conferbot-fonts-css" type="host">https://fonts.googleapis.com</value>
+            </values>
+        </policy>
+        <policy id="font-src">
+            <values>
+                <value id="conferbot-fonts" type="host">https://fonts.gstatic.com</value>
+            </values>
+        </policy>
+    </policies>
+</csp_whitelist>
