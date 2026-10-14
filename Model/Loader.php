@@ -59,9 +59,10 @@ class Loader
      * @param array $store keys: name, url, language, currency
      * @param array|null $customer keys: id, name, email (null = guest)
      * @param array|null $cart keys: total, itemCount (null = no quote)
+     * @param string $secret the workspace's identity verification secret ('' = off)
      * @return array widget options
      */
-    public static function buildOptions(array $store, ?array $customer = null, ?array $cart = null): array
+    public static function buildOptions(array $store, ?array $customer = null, ?array $cart = null, string $secret = ''): array
     {
         $options = ['customData' => [
             'platform' => 'magento',
@@ -77,6 +78,11 @@ class Loader
                 'name' => isset($customer['name']) ? trim((string) $customer['name']) : '',
                 'email' => isset($customer['email']) ? (string) $customer['email'] : '',
             ];
+            // Identity verification: the id signed with the workspace secret,
+            // so Conferbot knows this is the store's own logged-in customer.
+            if ($secret !== '') {
+                $options['user']['hash'] = self::userHash($options['user']['id'], $secret);
+            }
         }
 
         if (is_array($cart)) {
@@ -92,13 +98,44 @@ class Loader
     }
 
     /**
+     * HMAC-SHA256 of the signed value (the customer id) with the secret, hex - as Conferbot checks it.
+     */
+    public static function userHash(string $value, string $secret): string
+    {
+        return hash_hmac('sha256', $value, $secret);
+    }
+
+    /**
+     * The order on the checkout success page as a purchase, reported once per order.
+     *
+     * @param array|null $order keys: id, incrementId, total, currency (null = no order)
+     * @return array events: name, props, once
+     */
+    public static function events(?array $order): array
+    {
+        if (!is_array($order) || empty($order['id'])) {
+            return [];
+        }
+
+        return [[
+            'name' => 'purchase',
+            'props' => [
+                'value' => (float) $order['total'],
+                'currency' => (string) $order['currency'],
+                'order_id' => (string) ($order['incrementId'] ?? $order['id']),
+            ],
+            'once' => 'order-' . (int) $order['id'],
+        ]];
+    }
+
+    /**
      * JSON safe to inline inside a <script> block: JSON_HEX_* neutralize
      * user-controlled values (customer name/email) in the HTML context.
      *
      * @param array $options
      * @return string
      */
-    public static function toJson(array $options): string
+    public static function toJson($options): string
     {
         return (string) json_encode($options, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
     }
