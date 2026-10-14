@@ -1,0 +1,19 @@
+<?php
+/**
+ * The purchase on the success page, queued for the widget loader.
+ *
+ * @var \Magento\Framework\View\Element\Template $block
+ * @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer
+ *
+ * @author    Conferbot <support@conferbot.com>
+ * @license   Open Software License (OSL 3.0)
+ */
+
+/** @var \Conferbot\Chat\ViewModel\OrderEvents $orderEvents */
+$orderEvents = $block->getData('order_events');
+if (!$orderEvents) {
+    return;
+}
+$events = /* @noEscape */ $orderEvents->getEventsJson();
+?>
+<?= /* @noEscape */ $secureRenderer->renderTag('script', ['type' => 'text/javascript'], "window.ConferbotEvents = (window.ConferbotEvents || []).concat({$events});", false) ?>
