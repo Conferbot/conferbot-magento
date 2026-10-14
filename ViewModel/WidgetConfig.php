@@ -2,10 +2,11 @@
 /**
  * View model for the widget loader template.
  *
- * Reads the module configuration, the logged-in customer (customer session)
- * and the active quote (checkout session), and hands the template everything
- * it needs: bot ID, embed type, script URL and the pre-encoded options JSON.
- * All option building/encoding is delegated to the pure Loader class.
+ * The loader sits on every page, and most pages are served from the full
+ * page cache, shared by every visitor. So the page carries only the store's
+ * context; the logged-in customer (signed) and the cart come per visitor
+ * from the "conferbot" customer-data section (CustomerData\Conferbot), which
+ * Magento loads privately and refreshes on cart and login changes.
  *
  * @author    Conferbot <support@conferbot.com>
  * @license   Open Software License (OSL 3.0)
@@ -15,8 +16,6 @@ declare(strict_types=1);
 namespace Conferbot\Chat\ViewModel;
 
 use Conferbot\Chat\Model\Loader;
-use Magento\Checkout\Model\Session as CheckoutSession;
-use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Locale\ResolverInterface;
 use Magento\Framework\UrlInterface;
@@ -35,12 +34,6 @@ class WidgetConfig implements ArgumentInterface
     /** @var ScopeConfigInterface */
     private $scopeConfig;
 
-    /** @var CustomerSession */
-    private $customerSession;
-
-    /** @var CheckoutSession */
-    private $checkoutSession;
-
     /** @var StoreManagerInterface */
     private $storeManager;
 
@@ -49,14 +42,10 @@ class WidgetConfig implements ArgumentInterface
 
     public function __construct(
         ScopeConfigInterface $scopeConfig,
-        CustomerSession $customerSession,
-        CheckoutSession $checkoutSession,
         StoreManagerInterface $storeManager,
         ResolverInterface $localeResolver
     ) {
         $this->scopeConfig = $scopeConfig;
-        $this->customerSession = $customerSession;
-        $this->checkoutSession = $checkoutSession;
         $this->storeManager = $storeManager;
         $this->localeResolver = $localeResolver;
     }
@@ -94,15 +83,11 @@ class WidgetConfig implements ArgumentInterface
     }
 
     /**
-     * Widget options JSON, safe to inline inside a <script> block.
+     * Widget options JSON (store context only - cache-safe), safe to inline inside a <script> block.
      */
     public function getOptionsJson(): string
     {
-        return Loader::toJson(Loader::buildOptions(
-            $this->getStoreData(),
-            $this->getCustomerData(),
-            $this->getCartData()
-        ));
+        return Loader::toJson(Loader::buildOptions($this->getStoreData()));
     }
 
     /**
@@ -126,52 +111,6 @@ class WidgetConfig implements ArgumentInterface
             'url' => (string) $store->getBaseUrl(UrlInterface::URL_TYPE_WEB),
             'language' => (string) $this->localeResolver->getLocale(),
             'currency' => (string) $store->getCurrentCurrencyCode(),
-        ];
-    }
-
-    /**
-     * @return array|null keys: id, name, email (null when guest)
-     */
-    private function getCustomerData(): ?array
-    {
-        if (!$this->customerSession->isLoggedIn()) {
-            return null;
-        }
-
-        $customer = $this->customerSession->getCustomer();
-        if (!$customer || !$customer->getId()) {
-            return null;
-        }
-
-        return [
-            'id' => (int) $customer->getId(),
-            'name' => trim((string) $customer->getFirstname() . ' ' . (string) $customer->getLastname()),
-            'email' => (string) $customer->getEmail(),
-        ];
-    }
-
-    /**
-     * @return array|null keys: total, itemCount (null when no quote exists)
-     */
-    private function getCartData(): ?array
-    {
-        try {
-            if (!$this->checkoutSession->getQuoteId()) {
-                return null;
-            }
-            $quote = $this->checkoutSession->getQuote();
-        } catch (\Exception $e) {
-            // Quote loading can fail during early checkout states; context data is optional.
-            return null;
-        }
-
-        if (!$quote || !$quote->getId()) {
-            return null;
-        }
-
-        return [
-            'total' => (float) $quote->getGrandTotal(),
-            'itemCount' => (int) $quote->getItemsQty(),
         ];
     }
 }
