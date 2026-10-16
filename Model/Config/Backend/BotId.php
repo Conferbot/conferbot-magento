@@ -39,7 +39,7 @@ class BotId extends Value
 
         if ($botId === '') {
             throw new LocalizedException(__(
-                'We could not find a Chatbot ID in what you pasted. It looks like a 24-character code, e.g. 64a1b2c3d4e5f6a7b8c9d0e1. In your Conferbot dashboard, open your bot, click "Share", then "Copy Bot ID".'
+                'We could not find a Chatbot ID in what you pasted. It looks like a 24-character code, e.g. 64a1b2c3d4e5f6a7b8c9d0e1. In your Conferbot dashboard, open your bot, click "Share", then "Embed into your website": the ID is inside ConferbotWidget("...") in the code.'
             ));
         }
 
