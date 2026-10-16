@@ -24,7 +24,7 @@
                 <field id="bot_id" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Chatbot ID</label>
                     <backend_model>Conferbot\Chat\Model\Config\Backend\BotId</backend_model>
-                    <comment>Paste your bot ID (24-character code) from the Conferbot dashboard - you can also paste the full embed snippet or a dashboard URL and the ID is extracted for you. No account yet? Paste 691c970890527a0468f9b2c9 to try our demo bot - it works right away, no signup needed.</comment>
+                    <comment>Paste your bot ID (24-character code). In the Conferbot dashboard open your bot, click Share, then Embed into your website: the ID is inside ConferbotWidget(&quot;...&quot;) in the code and in the address bar (.../chatbot/ID/embed). You can also paste the full embed snippet or a dashboard URL and the ID is extracted for you. No account yet? Paste 691c970890527a0468f9b2c9 to try our demo bot - it works right away, no signup needed.</comment>
                 </field>
                 <field id="embed_type" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>How the Chat Appears</label>
