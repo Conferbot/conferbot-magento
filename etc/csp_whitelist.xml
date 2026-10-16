@@ -14,6 +14,7 @@
         <policy id="script-src">
             <values>
                 <value id="conferbot-cdn" type="host">https://cdn.conferbot.com</value>
+                <value id="conferbot-wdt-script" type="host">https://wdt.conferbot.com</value>
             </values>
         </policy>
         <policy id="connect-src">
@@ -28,6 +29,7 @@
                 <value id="conferbot-media" type="host">https://prd.media.cdn.conferbot.com</value>
                 <value id="conferbot-site" type="host">https://www.conferbot.com</value>
                 <value id="conferbot-map-tiles" type="host">https://tile.openstreetmap.org</value>
+                <value id="conferbot-source-icons" type="host">https://www.google.com</value>
             </values>
         </policy>
         <policy id="media-src">
