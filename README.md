@@ -65,13 +65,20 @@ The package is not on Packagist yet, so point Composer at this repository:
 
 ```bash
 composer config repositories.conferbot-magento vcs https://github.com/Conferbot/conferbot-magento
-composer require conferbot/module-chat:dev-main
+composer require conferbot/module-chat:^1.1
 ```
 
 ### 3. Manual (app/code)
 
-1. Download this repository (**Code > Download ZIP** on GitHub) and unzip it.
-2. Copy its contents to `app/code/Conferbot/Chat/` in your Magento root, so that `app/code/Conferbot/Chat/registration.php` exists.
+1. Download `conferbot-module-chat-<version>.zip` from the [latest release](https://github.com/Conferbot/conferbot-magento/releases/latest).
+2. Unzip it into `app/code/Conferbot/Chat/` in your Magento root, so that `app/code/Conferbot/Chat/registration.php` exists:
+
+   ```bash
+   mkdir -p app/code/Conferbot/Chat
+   unzip conferbot-module-chat-1.1.0.zip -d app/code/Conferbot/Chat
+   ```
+
+   To build the zip from a checkout instead: `git archive --format=zip -o conferbot-module-chat.zip HEAD` (tests and dev files are left out).
 3. Continue below.
 
 ### Enable the module
